@@ -1,0 +1,12 @@
+node_modules/
+
+.DS_Store
+*.log
+coverage/
+
+*.tsbuildinfo
+
+extension/ext/manifest.json
+
+dist/
+.env

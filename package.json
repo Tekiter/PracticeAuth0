@@ -1,0 +1,14 @@
+{
+  "name": "practice-auth0",
+  "private": true,
+  "workspaces": [
+    "reactSPA",
+    "server"
+  ],
+  "repository": "https://github.com/Tekiter/PracticeAuth0.git",
+  "author": "Tekiter <tekiter8@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^4.5.5"
+  }
+}
