@@ -1,4 +1,6 @@
 import { useAuth0 } from "@auth0/auth0-react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
 export function HomePage() {
   const { loginWithRedirect, logout, user, isAuthenticated, isLoading } =
@@ -18,6 +20,7 @@ export function HomePage() {
       <button onClick={() => logout({ returnTo: window.location.origin })}>
         Logout
       </button>
+      <Link to={{ pathname: "/secure" }}>Secure Data</Link>
       {isAuthenticated && <div>{JSON.stringify(user)}</div>}
     </div>
   );
