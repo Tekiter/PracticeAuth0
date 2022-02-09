@@ -4,8 +4,6 @@ import { API_ENDPOINT, AUTH0_CLIENT_ID, AUTH0_DOMAIN } from "./constant";
 import { HomePage } from "./pages/Home";
 import { SecurePage } from "./pages/Secure";
 
-console.log(API_ENDPOINT, AUTH0_CLIENT_ID, AUTH0_DOMAIN);
-
 function App() {
   return (
     <Auth0Provider

@@ -3,10 +3,8 @@ import axios, { AxiosInstance } from "axios";
 import { useEffect, useState } from "react";
 import { API_ENDPOINT } from "../constant";
 
-export function useAPI() {
+export function useAPIWithAuth() {
   const { getAccessTokenSilently, isAuthenticated, user } = useAuth0();
-  const [isLoaded, setIsLoaded] = useState(false);
-
   const [api, setAPI] = useState<AxiosInstance | null>(null);
 
   useEffect(() => {
@@ -20,14 +18,28 @@ export function useAPI() {
             Authorization: `Bearer ${accessToken}`,
           },
         });
-        setIsLoaded(true);
-
-        console.log("Access Token Set:", accessToken);
 
         setAPI(() => newAPI);
       })();
     }
   }, [getAccessTokenSilently, user?.sub, isAuthenticated]);
 
-  return { api, isLoaded };
+  return { api };
+}
+
+export function useAccessToken() {
+  const [accessToken, setAccessToken] = useState<null | string>(null);
+
+  const { getAccessTokenSilently, isAuthenticated, user } = useAuth0();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      (async () => {
+        const accessToken = await getAccessTokenSilently();
+        setAccessToken(accessToken);
+      })();
+    }
+  }, [getAccessTokenSilently, user?.sub, isAuthenticated]);
+
+  return accessToken;
 }
