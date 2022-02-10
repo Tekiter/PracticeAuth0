@@ -1,13 +1,24 @@
 import { useAuth0 } from "@auth0/auth0-react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 export function HomePage() {
-  const { loginWithRedirect, logout, user, isAuthenticated, isLoading } =
-    useAuth0();
+  const {
+    loginWithRedirect,
+    logout,
+    user,
+    isAuthenticated,
+    isLoading,
+    getIdTokenClaims,
+  } = useAuth0();
 
   function handleLogin() {
     loginWithRedirect();
   }
+
+  useEffect(() => {
+    getIdTokenClaims().then((r) => console.log(r));
+  });
 
   if (isLoading) {
     return <div>Loading auth info...</div>;

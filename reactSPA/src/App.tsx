@@ -11,7 +11,7 @@ function App() {
       clientId={AUTH0_CLIENT_ID}
       redirectUri={window.location.origin}
       audience={API_ENDPOINT}
-      scope="read:secret"
+      scope="email read:secret"
     >
       <BrowserRouter>
         <Routes>

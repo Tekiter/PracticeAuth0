@@ -38,7 +38,7 @@ export function SecurePage() {
     setOutput("Loading...");
     if (api) {
       try {
-        const res = await api.post("/secure-content");
+        const res = await api.post("/secure/with-middleware");
         setOutput(res.data);
       } catch (err) {
         setOutput(err);
