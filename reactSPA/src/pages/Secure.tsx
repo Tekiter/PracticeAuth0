@@ -46,6 +46,18 @@ export function SecurePage() {
     }
   }
 
+  async function getSecure4() {
+    setOutput("Loading...");
+    if (api) {
+      try {
+        const res = await api.post("/secure/get-user-info");
+        setOutput(res.data);
+      } catch (err) {
+        setOutput(err);
+      }
+    }
+  }
+
   if (isLoading) {
     return <div>loading auth data...</div>;
   }
@@ -60,6 +72,7 @@ export function SecurePage() {
           <button onClick={getSecure1}>Secure 1</button>
           <button onClick={getSecure2}>Secure 2</button>
           <button onClick={getSecure3}>Secure 3</button>
+          <button onClick={getSecure4}>Secure 4</button>
           <RawData>{JSON.stringify(output, null, 2)}</RawData>
           <RawData>Your Access Token: {accessToken}</RawData>
         </div>

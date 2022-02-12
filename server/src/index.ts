@@ -5,6 +5,7 @@ import cors from "cors";
 import morgan from "morgan";
 import { createRoutes } from "./routes";
 import { createTokenService } from "./services/token";
+import { createAuthService } from "./services/auth";
 
 async function createServer() {
   const app = express();
@@ -17,11 +18,17 @@ async function createServer() {
     ORIGIN,
   });
 
+  const authService = createAuthService({
+    AUTH0_DOMAIN,
+    tokenService,
+  });
+
   app.use(
     createRoutes({
       AUTH0_DOMAIN,
       ORIGIN,
       tokenService,
+      authService,
     })
   );
 

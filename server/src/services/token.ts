@@ -2,7 +2,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import jwks from "jwks-rsa";
 
 export interface TokenService {
-  verifyAccessToken(token: string): Promise<JwtPayload>;
+  verifyAccessToken(token: string): Promise<JwtPayload | null>;
 }
 
 interface TokenServiceDeps {
@@ -34,7 +34,7 @@ export function createTokenService({
     });
   }
 
-  function verifyAccessToken(token: string): Promise<JwtPayload> {
+  function verifyAccessToken(token: string): Promise<JwtPayload | null> {
     return new Promise((resolve, reject) => {
       jwt.verify(
         token,
@@ -46,7 +46,7 @@ export function createTokenService({
         },
         (err, decoded) => {
           if (err) {
-            reject(err);
+            resolve(null);
             return;
           }
           if (typeof decoded === "object") {

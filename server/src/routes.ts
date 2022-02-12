@@ -1,19 +1,22 @@
-import { NextFunction, Request, Response, Router } from "express";
+import { Router } from "express";
 import jwtExpress from "express-jwt";
 import jwks from "jwks-rsa";
+import { AuthService } from "./services/auth";
 import { TokenService } from "./services/token";
-import { asyncRoute } from "./util";
+import { APIError, asyncRoute, createExpressAuth } from "./util";
 
 interface RouteDeps {
   AUTH0_DOMAIN: string;
   ORIGIN: string;
   tokenService: TokenService;
+  authService: AuthService;
 }
 
 export function createRoutes({
   AUTH0_DOMAIN,
   ORIGIN,
   tokenService,
+  authService,
 }: RouteDeps) {
   const router = Router();
 
@@ -56,61 +59,28 @@ export function createRoutes({
     })
   );
 
-  const expressAuth = createExpressAuth(tokenService);
+  const expressAuth = createExpressAuth(tokenService, authService);
 
   router.post(
     "/secure/with-middleware",
     expressAuth.middleware,
     asyncRoute(async (req, res) => {
       const user = expressAuth.getUser(req);
-
       res.json({
         userId: user.id,
       });
     })
   );
 
+  router.post(
+    "/secure/get-user-info",
+    expressAuth.middleware,
+    asyncRoute(async (req, res) => {
+      const userMeta = await expressAuth.getUserMeta(req);
+
+      res.json(userMeta);
+    })
+  );
+
   return router;
-}
-
-export class APIError extends Error {
-  constructor(public status: number, message?: string) {
-    super(message);
-  }
-}
-
-function createExpressAuth(tokenService: TokenService) {
-  interface User {
-    id: string;
-  }
-
-  function setUser(req: unknown, user: User) {
-    (req as { user: User }).user = user;
-  }
-
-  function getUser(req: unknown): User {
-    return (req as { user: User }).user;
-  }
-
-  return {
-    async middleware(req: Request, res: Response, next: NextFunction) {
-      const token = req.header("Authorization")?.split("Bearer ")[1];
-      if (!token) {
-        next(new APIError(401, "Unauthorized"));
-        return;
-      }
-      const decoded = await tokenService.verifyAccessToken(token);
-      if (!decoded.sub) {
-        next(new Error("Invalid token data"));
-        return;
-      }
-
-      setUser(req, {
-        id: decoded.sub,
-      });
-
-      next();
-    },
-    getUser,
-  };
 }
